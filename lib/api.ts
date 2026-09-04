@@ -91,6 +91,26 @@ export const verificationsApi = {
     req('POST', `/api/admin/v1/verifications/${id}/reject`, { reason }),
 };
 
+export const eventsApi = {
+  list: (page = 1) =>
+    req<{ ok: true; events: AdminEvent[]; total: number }>(
+      'GET', `/api/admin/v1/events?page=${page}`
+    ),
+  create: (body: Partial<AdminEvent> & { startDate: string; endDate: string }) =>
+    req<{ ok: true; event: AdminEvent }>('POST', '/api/admin/v1/events', body),
+  update: (id: string, body: Partial<AdminEvent>) =>
+    req<{ ok: true; event: AdminEvent }>('PUT', `/api/admin/v1/events/${id}`, body),
+  remove: (id: string) =>
+    req('DELETE', `/api/admin/v1/events/${id}`),
+};
+
+export const plansApi = {
+  list: () =>
+    req<{ ok: true; plans: SubscriptionPlan[] }>('GET', '/api/admin/v1/plans'),
+  update: (planId: string, body: { amountMinor?: number; label?: string; isActive?: boolean }) =>
+    req<{ ok: true; plan: SubscriptionPlan }>('PATCH', `/api/admin/v1/plans/${planId}`, body),
+};
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface Admin {
@@ -178,4 +198,31 @@ export interface VerificationRequest {
   rejectionReason?: string;
   createdAt: string;
   reviewedAt?: string;
+}
+
+export interface AdminEvent {
+  _id: string;
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  venueName?: string;
+  venueAddress?: string;
+  category: 'offer' | 'event';
+  startDate: string;
+  endDate: string;
+  tags?: string[];
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface SubscriptionPlan {
+  _id: string;
+  planId: string;
+  tier: 'pro' | 'premium';
+  label: string;
+  intervalLabel: string;
+  amountMinor: number;
+  durationDays: number;
+  isActive: boolean;
+  updatedAt: string;
 }
