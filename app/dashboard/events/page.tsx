@@ -338,7 +338,11 @@ export default function EventsPage() {
                   </tr>
                 )
                 : events.map((ev) => (
-                  <tr key={ev._id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr
+                    key={ev._id}
+                    onClick={() => setModal(ev)}
+                    className="hover:bg-violet-50/40 transition-colors cursor-pointer"
+                  >
                     <td className="px-4 py-3.5">
                       <div className="font-medium text-gray-900">{ev.title}</div>
                       {ev.venueName && <div className="text-xs text-gray-400 mt-0.5">{ev.venueName}</div>}
@@ -354,7 +358,7 @@ export default function EventsPage() {
                     <td className="px-4 py-3.5 text-xs text-gray-500">
                       {new Date(ev.endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
-                    <td className="px-4 py-3.5">
+                    <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => handleToggle(ev)}
                         className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${ev.isActive ? 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100' : 'bg-gray-100 text-gray-500 border border-gray-200 hover:bg-gray-200'}`}
@@ -362,7 +366,7 @@ export default function EventsPage() {
                         {ev.isActive ? 'Active' : 'Inactive'}
                       </button>
                     </td>
-                    <td className="px-4 py-3.5">
+                    <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                       <div className="flex gap-2">
                         <button
                           onClick={() => setModal(ev)}

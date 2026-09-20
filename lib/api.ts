@@ -50,10 +50,17 @@ export const usersApi = {
   list: (page = 1, search = '', status = '') =>
     req<{ ok: true; users: AdminUser[]; total: number }>(
       'GET',
-      `/api/admin/v1/users?page=${page}&search=${encodeURIComponent(search)}&status=${status}`
+      `/api/admin/v1/users?page=${page}&q=${encodeURIComponent(search)}&filter=${status}`
+    ),
+  detail: (id: string) =>
+    req<{ ok: true; user: AdminUserDetail; activities: AdminActivity[]; pingCount: number; ads: unknown[]; warnings: unknown[]; bans: unknown[] }>(
+      'GET', `/api/admin/v1/users/${id}`
     ),
   ban: (id: string, type: 'temp' | 'perm', durationDays?: number, reason?: string) =>
-    req('POST', `/api/admin/v1/users/${id}/ban`, { type, durationDays, reason }),
+    req('POST', `/api/admin/v1/users/${id}/ban`, {
+      type, durationDays, reason,
+      ...(type === 'perm' ? { confirm: 'CONFIRM' } : {}),
+    }),
   unban: (id: string) =>
     req('POST', `/api/admin/v1/users/${id}/unban`),
 };
@@ -154,11 +161,31 @@ export interface AdminUser {
   displayName?: string;
   username?: string;
   phone: string;
+  email?: string;
   avatarUrl?: string;
   status: string;
   trustRate: number;
   createdAt: string;
   verificationStatus: string;
+}
+
+export interface AdminUserDetail extends AdminUser {
+  dob?: string;
+  gender?: string;
+  bio?: string;
+  lastActiveAt?: string;
+  bannedUntil?: string;
+  strikeCount?: number;
+}
+
+export interface AdminActivity {
+  _id: string;
+  title: string;
+  type: string;
+  status: string;
+  startsAt: string;
+  participants?: unknown[];
+  createdAt: string;
 }
 
 export interface Report {

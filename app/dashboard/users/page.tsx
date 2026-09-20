@@ -210,13 +210,22 @@ export default function UsersPage() {
                   </tr>
                 )
                 : users.map((user) => (
-                  <tr key={user._id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr
+                    key={user._id}
+                    className="hover:bg-violet-50/40 transition-colors cursor-pointer"
+                    onClick={() => router.push(`/dashboard/users/${user._id}`)}
+                  >
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-3">
                         <Avatar user={user} />
-                        <span className="font-medium text-gray-900 max-w-[140px] truncate">
-                          {user.displayName || '—'}
-                        </span>
+                        <div className="min-w-0">
+                          <span className="font-medium text-gray-900 max-w-[140px] truncate block">
+                            {user.displayName || '—'}
+                          </span>
+                          {user.email && (
+                            <span className="text-xs text-gray-400 truncate block max-w-[140px]">{user.email}</span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-4 py-3.5 text-gray-500">
@@ -245,7 +254,7 @@ export default function UsersPage() {
                     <td className="px-4 py-3.5 text-gray-500 text-xs">
                       {new Date(user.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
-                    <td className="px-4 py-3.5">
+                    <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                       {actionLoading === user._id ? (
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-200 border-t-violet-600" />
                       ) : (

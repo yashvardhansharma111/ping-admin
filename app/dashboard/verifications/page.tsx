@@ -286,20 +286,24 @@ export default function VerificationsPage() {
   useEffect(() => { fetchRequests(); }, [fetchRequests]);
 
   async function handleApprove(id: string) {
+    setRequests((prev) => prev.filter((r) => r._id !== id));
+    setTotal((t) => Math.max(0, t - 1));
     try {
       await verificationsApi.approve(id);
-      fetchRequests();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Approve failed');
+      await fetchRequests();
     }
   }
 
   async function handleReject(id: string, reason: string) {
+    setRequests((prev) => prev.filter((r) => r._id !== id));
+    setTotal((t) => Math.max(0, t - 1));
     try {
       await verificationsApi.reject(id, reason || undefined);
-      fetchRequests();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Reject failed');
+      await fetchRequests();
     }
   }
 
