@@ -8,6 +8,9 @@ const EMPTY_FORM = {
   title: '',
   description: '',
   imageUrl: '',
+  organizer: '',
+  city: '',
+  mapsUrl: '',
   venueName: '',
   venueAddress: '',
   category: 'event' as 'event' | 'offer',
@@ -48,6 +51,9 @@ function EventModal({
           title: initial.title,
           description: initial.description ?? '',
           imageUrl: initial.imageUrl ?? '',
+          organizer: initial.organizer ?? '',
+          city: initial.city ?? '',
+          mapsUrl: initial.mapsUrl ?? '',
           venueName: initial.venueName ?? '',
           venueAddress: initial.venueAddress ?? '',
           category: initial.category,
@@ -89,9 +95,41 @@ function EventModal({
               className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none resize-none"
               value={form.description}
               onChange={(e) => set('description', e.target.value)}
-              rows={3}
+              rows={4}
+              maxLength={1500}
+              placeholder="About this event — shown with a “See all” toggle in the app"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1">Organizer <span className="font-normal text-gray-400">(shown as “By …”)</span></label>
+              <input
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+                value={form.organizer}
+                onChange={(e) => set('organizer', e.target.value)}
+                maxLength={80}
+                placeholder="e.g. Week Museum"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1">City</label>
+              <input
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+                value={form.city}
+                onChange={(e) => set('city', e.target.value)}
+                maxLength={80}
+                placeholder="e.g. Bhopal"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 mb-1">Google Maps URL <span className="font-normal text-gray-400">(users are sent here when they tap the location)</span></label>
+            <input
+              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+              value={form.mapsUrl}
+              onChange={(e) => set('mapsUrl', e.target.value)}
               maxLength={500}
-              placeholder="Short description"
+              placeholder="https://maps.app.goo.gl/… or https://www.google.com/maps/place/…"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -235,6 +273,9 @@ export default function EventsPage() {
         title: form.title.trim(),
         description: form.description.trim() || undefined,
         imageUrl: form.imageUrl.trim() || undefined,
+        organizer: form.organizer.trim() || undefined,
+        city: form.city.trim() || undefined,
+        mapsUrl: form.mapsUrl.trim() || undefined,
         venueName: form.venueName.trim() || undefined,
         venueAddress: form.venueAddress.trim() || undefined,
         category: form.category,
@@ -345,7 +386,9 @@ export default function EventsPage() {
                   >
                     <td className="px-4 py-3.5">
                       <div className="font-medium text-gray-900">{ev.title}</div>
-                      {ev.venueName && <div className="text-xs text-gray-400 mt-0.5">{ev.venueName}</div>}
+                      <div className="text-xs text-gray-400 mt-0.5">
+                        {ev.organizer ? `By ${ev.organizer}` : ''}{ev.organizer && (ev.venueName || ev.city) ? ' · ' : ''}{ev.venueName || ev.city || ''}
+                      </div>
                     </td>
                     <td className="px-4 py-3.5">
                       <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${ev.category === 'offer' ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-blue-50 text-blue-700 border border-blue-200'}`}>

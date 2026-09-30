@@ -266,6 +266,9 @@ export interface AdminEvent {
   title: string;
   description?: string;
   imageUrl?: string;
+  organizer?: string;
+  city?: string;
+  mapsUrl?: string;
   venueName?: string;
   venueAddress?: string;
   category: 'offer' | 'event';
