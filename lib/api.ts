@@ -118,6 +118,40 @@ export const plansApi = {
     req<{ ok: true; plan: SubscriptionPlan }>('PATCH', `/api/admin/v1/plans/${planId}`, body),
 };
 
+export interface Coupon {
+  _id: string;
+  code: string;
+  description: string;
+  discountType: 'percent' | 'flat';
+  value: number;
+  appliesToTiers: string[];
+  appliesToPlanIds: string[];
+  firstTimeOnly: boolean;
+  isFeatured: boolean;
+  maxRedemptions: number | null;
+  perUserLimit: number;
+  redemptionCount: number;
+  startsAt: string | null;
+  expiresAt: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export type CouponInput = Partial<Omit<Coupon, '_id' | 'redemptionCount' | 'createdAt'>>;
+
+export const couponsApi = {
+  list: () =>
+    req<{ ok: true; coupons: Coupon[]; plans: { planId: string; tier: string; label: string }[] }>('GET', '/api/admin/v1/coupons'),
+  create: (body: CouponInput) =>
+    req<{ ok: true; coupon: Coupon }>('POST', '/api/admin/v1/coupons', body),
+  update: (id: string, body: CouponInput) =>
+    req<{ ok: true; coupon: Coupon }>('PATCH', `/api/admin/v1/coupons/${id}`, body),
+  remove: (id: string) =>
+    req<{ ok: true }>('DELETE', `/api/admin/v1/coupons/${id}`),
+  redemptions: (id: string) =>
+    req<{ ok: true; redemptions: { userId: { displayName?: string; username?: string; phone?: string } | null; planId: string; at: string }[] }>('GET', `/api/admin/v1/coupons/${id}/redemptions`),
+};
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface Admin {
